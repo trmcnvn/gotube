@@ -2,6 +2,7 @@ package main
 
 import (
   "os"
+  //"os/exec"
   "fmt"
   "flag"
 )
@@ -31,6 +32,8 @@ func main() {
     return
   }
 
+  fmt.Println("Downloading...")
+
   // Download the YouTube flv
   err = yt.Download()
   if err != nil {
@@ -38,5 +41,10 @@ func main() {
     return
   }
 
-  fmt.Printf("video id: %s\n", yt.id)
+  fmt.Println("Finished Downloading!")
+
+  // Play the file if set to
+  if yt.play {
+    // todo: determine if windows
+  }
 }

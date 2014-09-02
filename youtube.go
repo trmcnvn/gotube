@@ -12,7 +12,7 @@ import (
 )
 
 type YouTube struct {
-  filename string
+  output string
   play bool
   audio bool
   id string
@@ -66,8 +66,8 @@ func (yt *YouTube) GetStreams() ([]url.Values, error) {
   }
 
   // set filename if needed
-  if yt.filename == "" {
-    yt.filename = data["title"][0]
+  if yt.output == "" {
+    yt.output = data["title"][0]
   }
 
   stream_map, found := data["url_encoded_fmt_stream_map"]
@@ -115,9 +115,13 @@ func (yt *YouTube) Download() error {
 
   defer out.Close()
 
-  _, err = io.Copy(out, res.Body)
-  if err != nil {
-    return err
+  if yt.audio {
+    // todo: execute ffmpeg cmd
+  } else {
+    _, err = io.Copy(out, res.Body)
+    if err != nil {
+      return err
+    }
   }
 
   return nil

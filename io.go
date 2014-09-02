@@ -58,7 +58,7 @@ func GetIOStream(yt *YouTube, format string) (io.WriteCloser, error) {
     return nil, err
   }
 
-  filename, err := Parameterize(yt.filename)
+  filename, err := Parameterize(yt.output)
   if err != nil {
     return nil, err
   }
@@ -74,5 +74,7 @@ func GetIOStream(yt *YouTube, format string) (io.WriteCloser, error) {
     return nil, err
   }
 
+  // update output to be full file path
+  yt.output = file
   return out, nil
 }
