@@ -6,6 +6,7 @@ import (
   "fmt"
   "net/url"
   "net/http"
+  "io"
   "io/ioutil"
   "strings"
 )
@@ -107,7 +108,14 @@ func (yt *YouTube) Download() error {
     return fmt.Errorf("Recieved invalid HTTP status code: %d", res.StatusCode)
   }
 
-  _, err = GetIOStream(yt, streams[0]["type"][0])
+  out, err := GetIOStream(yt, streams[0]["type"][0])
+  if err != nil {
+    return err
+  }
+
+  defer out.Close()
+
+  _, err = io.Copy(out, res.Body)
   if err != nil {
     return err
   }

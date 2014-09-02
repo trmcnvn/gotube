@@ -3,7 +3,6 @@ package main
 import (
   "io"
   "os"
-  "fmt"
   "regexp"
   "strings"
   "errors"
