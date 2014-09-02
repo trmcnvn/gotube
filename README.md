@@ -24,11 +24,6 @@ gotube <youtube-url>
 | -play     | false         | open the downloaded file in default media player |
 | -audio    | false         | output audio file |
 
-#### Valid YouTube URLs
-
-* [http(s)://www.]youtube.com/watch?v=id
-* [http(s)://www.]youtu.be/id
-
 ## Examples
 
 ```
