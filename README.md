@@ -42,6 +42,10 @@ ffmpeg is required if you wish to download audio only versions of YouTube media.
 
 `brew install ffmpeg`
 
+#### Windows
+
+Check out [http://ffmpeg.zeranoe.com/builds/](http://ffmpeg.zeranoe.com/builds/)
+
 ## License
 
 [The MIT License](https://github.com/vevix/gotube/blob/master/LICENSE.md)

@@ -114,8 +114,6 @@ func (yt *YouTube) Download() error {
     return err
   }
 
-  defer out.Close()
-
   _, err = io.Copy(out, res.Body)
   if err != nil {
     return err
@@ -133,10 +131,16 @@ func (yt *YouTube) Download() error {
 
     // delete the video file
     vid_path := yt.output
-    defer os.Remove(vid_path)
+    defer func() {
+      // Close Writer otherwise Windows won't delete the file
+      out.Close()
+      os.Remove(vid_path)
+    }()
 
     // update output for .wav file
     yt.output = wav_path
+  } else {
+    out.Close()
   }
 
   return nil

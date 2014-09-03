@@ -12,7 +12,7 @@ func IsWindows() bool {
 func OpenFile(path string) error {
   var cmd *exec.Cmd
   if IsWindows() {
-    cmd = exec.Command("start", path)
+    cmd = exec.Command("cmd", "/C", "start", path)
   } else {
     cmd = exec.Command("open", path)
   }
