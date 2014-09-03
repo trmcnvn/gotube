@@ -102,46 +102,74 @@ func (yt *YouTube) Download() error {
 	if err != nil {
 		return err
 	}
-
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
 		return fmt.Errorf("Recieved invalid HTTP status code: %d", res.StatusCode)
 	}
 
-	out, err := GetIOStream(yt, streams[0]["type"][0])
+	out, err := CreateTmpFile()
 	if err != nil {
 		return err
 	}
+	defer func() {
+		out.Close()
+		os.Remove(out.Name())
+	}()
 
 	_, err = io.Copy(out, res.Body)
 	if err != nil {
 		return err
 	}
 
+	// parameterize the title of the file
+	filename, err := Parameterize(yt.output)
+	if err != nil {
+		return err
+	}
+
+	workingDir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	path := workingDir + "/" + filename
+
 	// convert to wav if audio is true
 	if yt.audio {
-		wav_path := yt.output[:len(yt.output)-3]
-		wav_path = wav_path + "wav"
+		path = path + ".wav"
 
-		err = FFmpeg(yt.output, wav_path)
+		err = FFmpeg(out.Name(), path)
+		if err != nil {
+			return err
+		}
+	} else {
+		// get the extension based on the stream format
+		ext, err := GetExtension(streams[0]["type"][0])
+		if err != nil {
+			return err
+		}
+		path = path + "." + ext
+
+		// copy the file from the tmp dir to wd
+		f, err := CreateFile(path)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
+		// reset offset for read
+		_, err = out.Seek(0, 0)
 		if err != nil {
 			return err
 		}
 
-		// delete the video file
-		vid_path := yt.output
-		defer func() {
-			// Close Writer otherwise Windows won't delete the file
-			out.Close()
-			os.Remove(vid_path)
-		}()
-
-		// update output for .wav file
-		yt.output = wav_path
-	} else {
-		out.Close()
+		_, err = io.Copy(f, out)
+		if err != nil {
+			return err
+		}
 	}
 
+	yt.output = path
 	return nil
 }

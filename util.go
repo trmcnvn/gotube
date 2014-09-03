@@ -2,11 +2,16 @@ package main
 
 import (
 	"errors"
-	"io"
-	"os"
+	"io/ioutil"
 	"regexp"
 	"strings"
+	"os"
 )
+
+var formats []string = []string{
+	"video/mp4",
+	"video/x-flv",
+}
 
 func Parameterize(str string) (string, error) {
 	// Replace unwanted chars into separator char
@@ -38,11 +43,6 @@ func GetExtension(format string) (string, error) {
 		return "", errors.New("Format can't be blank")
 	}
 
-	formats := []string{
-		"video/mp4",
-		"video/x-flv",
-	}
-
 	for _, v := range formats {
 		if strings.Contains(format, v) {
 			return v[len(v)-3:], nil
@@ -52,29 +52,20 @@ func GetExtension(format string) (string, error) {
 	return "", errors.New("Couldn't find a valid format")
 }
 
-func GetIOStream(yt *YouTube, format string) (io.WriteCloser, error) {
-	path, err := os.Getwd()
+func CreateTmpFile() (*os.File, error) {
+	f, err := ioutil.TempFile("", "gotube")
 	if err != nil {
 		return nil, err
 	}
 
-	filename, err := Parameterize(yt.output)
+	return f, nil
+}
+
+func CreateFile(path string) (*os.File, error) {
+	f, err := os.Create(path)
 	if err != nil {
 		return nil, err
 	}
 
-	ext, err := GetExtension(format)
-	if err != nil {
-		return nil, err
-	}
-
-	file := path + "/" + filename + "." + ext
-	out, err := os.Create(file)
-	if err != nil {
-		return nil, err
-	}
-
-	// update output to be full file path
-	yt.output = file
-	return out, nil
+	return f, nil
 }
