@@ -7,7 +7,7 @@ Current limitations: Will only download highest quality version available.
 ## Install
 
 ```
-go get https://github.com/vevix/gotube
+go get github.com/vevix/gotube
 ```
 
 ## Usage
