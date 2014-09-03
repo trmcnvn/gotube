@@ -9,7 +9,7 @@ import (
 
 func main() {
   output := flag.String("output", "", "specify the output file name")
-  play := flag.Bool("play", true, "open the downloaded file in default media player")
+  play := flag.Bool("play", false, "open the downloaded file in default media player")
   audio := flag.Bool("audio", false, "output audio file")
   flag.Parse()
 
@@ -32,6 +32,7 @@ func main() {
     return
   }
 
+  // todo: progress %
   fmt.Println("Downloading...")
 
   // Download the YouTube flv
@@ -45,6 +46,10 @@ func main() {
 
   // Play the file if set to
   if yt.play {
-    // todo: determine if windows
+    err = OpenFile(yt.output)
+    if err != nil {
+      fmt.Fprintln(os.Stderr, err)
+      return
+    }
   }
 }

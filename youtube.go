@@ -9,6 +9,7 @@ import (
   "io"
   "io/ioutil"
   "strings"
+  "os"
 )
 
 type YouTube struct {
@@ -115,13 +116,27 @@ func (yt *YouTube) Download() error {
 
   defer out.Close()
 
+  _, err = io.Copy(out, res.Body)
+  if err != nil {
+    return err
+  }
+
+  // convert to wav if audio is true
   if yt.audio {
-    // todo: execute ffmpeg cmd
-  } else {
-    _, err = io.Copy(out, res.Body)
+    wav_path := yt.output[:len(yt.output)-3]
+    wav_path = wav_path + "wav"
+
+    err = FFmpeg(yt.output, wav_path)
     if err != nil {
       return err
     }
+
+    // delete the video file
+    vid_path := yt.output
+    defer os.Remove(vid_path)
+
+    // update output for .wav file
+    yt.output = wav_path
   }
 
   return nil
