@@ -45,6 +45,7 @@ ffmpeg is required if you wish to download audio only versions of YouTube media.
 #### Windows
 
 Check out [http://ffmpeg.zeranoe.com/builds/](http://ffmpeg.zeranoe.com/builds/)
+or if you have Chocolately [http://chocolatey.org/packages/ffmpeg](http://chocolatey.org/packages/ffmpeg)
 
 ## License
 
