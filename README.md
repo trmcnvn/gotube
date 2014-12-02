@@ -21,7 +21,7 @@ gotube <youtube-url>
 | Parameter | Default Value | Description |
 |-----------|---------------|-------------|
 | -output   | YouTube title | specify the output file name (extension is added by gotube) |
-| -play     | false         | open the downloaded file in default media player |
+| -play     | false         | open the downloaded file in the default media player |
 | -audio    | false         | output audio file |
 
 ## Examples
